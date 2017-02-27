@@ -20,26 +20,12 @@ static int test_pass = 0;
 
 #define EXPECT_EQ_INT(expect, actual) EXPECT_EQ_BASE((expect) == (actual), expect, actual, "%d")
 
-//能否正确解析null
-static void test_parse_null() {
+//能否正确解析单值类型(null,true,false)
+static void test_parse_single_type(const char *c, lept_type expected_type) {
     lept_value v;
-    v.type = LEPT_FALSE;
-    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, "null"));
-    EXPECT_EQ_INT(LEPT_NULL, lept_get_type(&v));
-}
-//能否正确解析true
-static void test_parse_true() {
-    lept_value v;
-    v.type = LEPT_FALSE;
-    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, " true "));
-    EXPECT_EQ_INT(LEPT_TRUE, lept_get_type(&v));
-}
-//能否正确解析false
-static void test_parse_false() {
-    lept_value v;
-    v.type = LEPT_FALSE;
-    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, " false "));
-    EXPECT_EQ_INT(LEPT_FALSE, lept_get_type(&v));
+    v.type = LEPT_NULL;
+    EXPECT_EQ_INT(LEPT_PARSE_OK, lept_parse(&v, c));
+    EXPECT_EQ_INT(expected_type, lept_get_type(&v));
 }
 //只有空格或空串
 static void test_parse_expect_value() {
@@ -82,9 +68,9 @@ static void test_parse_root_not_singular() {
  * 解析失败v的类型为LEPT_NULL
  */
 static void test_parse() {
-    test_parse_null();
-    test_parse_true();
-    test_parse_false();
+    test_parse_single_type(" null ", LEPT_NULL);
+    test_parse_single_type(" true ", LEPT_TRUE);
+    test_parse_single_type(" \n\n\r\n\tfalse ", LEPT_FALSE);
     test_parse_expect_value();
     test_parse_invalid_value();
     test_parse_root_not_singular();
