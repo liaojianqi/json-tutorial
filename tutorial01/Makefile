@@ -9,4 +9,4 @@ leptjson_test: test.c leptjson.o
 run: leptjson_test
 	./leptjson_test
 clean:
-	rm *.o leptjson_test
+	rm *.o leptjson_test *.out
